@@ -3,4 +3,8 @@ export type RootStackParamList = {
     Login: undefined;
     Register: undefined;
     Home: undefined;
+    Products: undefined;
+    ProductDetail: { productId: number };
+    CreateProduct: undefined;
+    UpdateProduct: {productId: number};
   };
