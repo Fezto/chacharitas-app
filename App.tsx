@@ -11,6 +11,7 @@ import RegisterScreen from './screens/registerScreen';
 import ProductsScreen from './screens/productsScreen';
 import ProductDetailScreen from './screens/productDetailScreen';
 import CreateProductScreen from './screens/createProductScreen';
+import UpdateProductScreen from './screens/updateProductScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -26,6 +27,7 @@ export default function App() {
           <Stack.Screen name="Products" component={ProductsScreen} />
           <Stack.Screen name="ProductDetail" component={ProductDetailScreen} />
           <Stack.Screen name="CreateProduct" component={CreateProductScreen} />
+          <Stack.Screen name="UpdateProduct" component={UpdateProductScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>
