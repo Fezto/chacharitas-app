@@ -7,7 +7,6 @@ import { Text, TextInput, Button } from 'react-native-paper';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/types';
 
-
 const LoginScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [email, setEmail] = useState('');
@@ -33,20 +32,22 @@ const LoginScreen = () => {
 
       navigation.navigate('Home');
     } catch (err: any) {
-  console.error(err);
-  const detail = err.response?.data?.detail;
-  if (detail === 'Credenciales inválidas') {
-    Alert.alert('Error', 'Correo o contraseña incorrectos');
-  } else {
-    Alert.alert('Error', detail || 'Error de red');
-  }
-}
+      console.error(err);
+      const detail = err.response?.data?.detail;
+      if (detail === 'Credenciales inválidas') {
+        Alert.alert('Error', 'Correo o contraseña incorrectos');
+      } else {
+        Alert.alert('Error', detail || 'Error de red');
+      }
+    } finally {
+      setLoading(false); // Aquí se asegura que loading vuelva a false
+    }
   };
 
   return (
     <View style={styles.container}>
       <Image source={require('../assets/login.png')} style={styles.image} resizeMode="contain" />
-      
+
       <Text variant="headlineMedium" style={styles.title}>
         Iniciar sesión
       </Text>

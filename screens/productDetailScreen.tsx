@@ -8,7 +8,7 @@ import type { RootStackParamList } from '../navigation/types';
 import imageMap from '../utils/imageMap';
 
 type ProductDetailScreenRouteProp = RouteProp<RootStackParamList, 'ProductDetail'>;
-type NavigationProp = StackNavigationProp<RootStackParamList, 'ProductDetail'>;
+type NavigationProp = StackNavigationProp<RootStackParamList>;
 
 type Props = {
   route: ProductDetailScreenRouteProp;
@@ -63,7 +63,7 @@ const ProductDetailScreen: React.FC<Props> = ({ route }) => {
   }, [productId]);
 
   const handleEdit = () => {
-    navigation.navigate('UpdateProduct', { productId });
+    navigation.navigate('UpdateProduct', { productId }); 
   };
 
   const handleDelete = async () => {
@@ -171,7 +171,7 @@ const ProductDetailScreen: React.FC<Props> = ({ route }) => {
         <Dialog visible={deleteDialogVisible} onDismiss={() => setDeleteDialogVisible(false)}>
           <Dialog.Title>Confirmar eliminación</Dialog.Title>
           <Dialog.Content>
-            <Text>¿Estás segura de que quieres eliminar este producto?</Text>
+            <Text>¿Estás seguro de que quieres eliminar este producto?</Text>
           </Dialog.Content>
           <Dialog.Actions>
             <Button onPress={() => setDeleteDialogVisible(false)}>Cancelar</Button>
