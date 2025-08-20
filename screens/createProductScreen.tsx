@@ -1,11 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { View, ScrollView, StyleSheet, Alert, Modal, TouchableOpacity, FlatList } from 'react-native';
-import { TextInput, Button, Text, Checkbox } from 'react-native-paper';
-import { useNavigation } from '@react-navigation/native';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import type { RootStackParamList } from '../navigation/types';
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  ScrollView,
+  StyleSheet,
+  Alert,
+  Modal,
+  TouchableOpacity,
+  FlatList,
+} from "react-native";
+import { TextInput, Button, Text, Checkbox } from "react-native-paper";
+import { useNavigation } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import type { RootStackParamList } from "../navigation/types";
 
-type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Products'>;
+type NavigationProp = NativeStackNavigationProp<RootStackParamList, "Products">;
 
 type Brand = { id: number; name: string };
 type Category = { id: number; name: string };
@@ -17,10 +25,10 @@ type Size = { id: number; name: string };
 const CreateProductScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
 
-  const [name, setName] = useState('');
-  const [price, setPrice] = useState('');
-  const [quantity, setQuantity] = useState('');
-  const [description, setDescription] = useState('');
+  const [name, setName] = useState("");
+  const [price, setPrice] = useState("");
+  const [quantity, setQuantity] = useState("");
+  const [description, setDescription] = useState("");
 
   // Datos dropdowns
   const [brands, setBrands] = useState<Brand[]>([]);
@@ -39,7 +47,9 @@ const CreateProductScreen: React.FC = () => {
   const [sizeIds, setSizeIds] = useState<number[]>([]);
 
   // Modales visibles
-  const [modalVisible, setModalVisible] = useState<{ field: string | null }>({ field: null });
+  const [modalVisible, setModalVisible] = useState<{ field: string | null }>({
+    field: null,
+  });
 
   useEffect(() => {
     fetchBrands();
@@ -54,55 +64,55 @@ const CreateProductScreen: React.FC = () => {
   const fetchBrands = async () => {
     try {
       const res = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/brands/`);
-      if (!res.ok) throw new Error('Error al obtener marcas');
+      if (!res.ok) throw new Error("Error al obtener marcas");
       setBrands(await res.json());
     } catch (e: any) {
-      Alert.alert('Error', e.message || 'No se pudo cargar las marcas');
+      Alert.alert("Error", e.message || "No se pudo cargar las marcas");
     }
   };
   const fetchCategories = async () => {
     try {
       const res = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/categories/`);
-      if (!res.ok) throw new Error('Error al obtener categorías');
+      if (!res.ok) throw new Error("Error al obtener categorías");
       setCategories(await res.json());
     } catch (e: any) {
-      Alert.alert('Error', e.message || 'No se pudo cargar las categorías');
+      Alert.alert("Error", e.message || "No se pudo cargar las categorías");
     }
   };
   const fetchColors = async () => {
     try {
       const res = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/colors/`);
-      if (!res.ok) throw new Error('Error al obtener colores');
+      if (!res.ok) throw new Error("Error al obtener colores");
       setColors(await res.json());
     } catch (e: any) {
-      Alert.alert('Error', e.message || 'No se pudo cargar los colores');
+      Alert.alert("Error", e.message || "No se pudo cargar los colores");
     }
   };
   const fetchGenders = async () => {
     try {
       const res = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/genders/`);
-      if (!res.ok) throw new Error('Error al obtener géneros');
+      if (!res.ok) throw new Error("Error al obtener géneros");
       setGenders(await res.json());
     } catch (e: any) {
-      Alert.alert('Error', e.message || 'No se pudo cargar los géneros');
+      Alert.alert("Error", e.message || "No se pudo cargar los géneros");
     }
   };
   const fetchMaterials = async () => {
     try {
       const res = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/materials/`);
-      if (!res.ok) throw new Error('Error al obtener materiales');
+      if (!res.ok) throw new Error("Error al obtener materiales");
       setMaterials(await res.json());
     } catch (e: any) {
-      Alert.alert('Error', e.message || 'No se pudo cargar los materiales');
+      Alert.alert("Error", e.message || "No se pudo cargar los materiales");
     }
   };
   const fetchSizes = async () => {
     try {
       const res = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/sizes/`);
-      if (!res.ok) throw new Error('Error al obtener tallas');
+      if (!res.ok) throw new Error("Error al obtener tallas");
       setSizes(await res.json());
     } catch (e: any) {
-      Alert.alert('Error', e.message || 'No se pudo cargar las tallas');
+      Alert.alert("Error", e.message || "No se pudo cargar las tallas");
     }
   };
 
@@ -113,43 +123,89 @@ const CreateProductScreen: React.FC = () => {
     setSelectedArray: React.Dispatch<React.SetStateAction<number[]>>
   ) => {
     if (selectedArray.includes(id)) {
-      setSelectedArray(selectedArray.filter(i => i !== id));
+      setSelectedArray(selectedArray.filter((i) => i !== id));
     } else {
       setSelectedArray([...selectedArray, id]);
     }
   };
 
   const handleSubmit = async () => {
-    if (!name || !price || !brandId || !categoryId || colorIds.length === 0 || genderIds.length === 0 || materialIds.length === 0 || sizeIds.length === 0) {
-      Alert.alert('Faltan campos obligatorios', 'Completa todos los campos obligatorios.');
+    if (!name || !price || !brandId || !categoryId) {
+      Alert.alert(
+        "Faltan campos obligatorios",
+        "Completa al menos nombre, precio, marca y categoría."
+      );
       return;
     }
 
     try {
-      const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/products/`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name,
-          price: parseFloat(price),
-          quantity: quantity ? parseInt(quantity) : undefined,
-          description,
-          user_id: 1,
-          brand_id: brandId,
-          category_id: categoryId,
-          color_ids: colorIds,
-          gender_ids: genderIds,
-          material_ids: materialIds,
-          size_ids: sizeIds,
-        }),
-      });
+      // Preparar datos compatibles con tu API actualizada
+      const productData = {
+        name,
+        price: parseFloat(price),
+        quantity: quantity ? parseInt(quantity) : null,
+        description: description || null,
+        user_id: 1, // Hardcodeado por ahora
+        brand_id: brandId,
+        category_id: categoryId,
+        // Enviar arrays directamente (compatible con tu API actualizada)
+        color_ids: colorIds.length > 0 ? colorIds : [],
+        gender_ids: genderIds.length > 0 ? genderIds : [],
+        material_ids: materialIds.length > 0 ? materialIds : [],
+        size_ids: sizeIds.length > 0 ? sizeIds : [],
+      };
 
-      if (!response.ok) throw new Error('Error al crear el producto');
+      console.log(
+        "📤 Enviando datos del producto:",
+        JSON.stringify(productData, null, 2)
+      );
 
-      Alert.alert('¡Producto publicado exitosamente!');
-      navigation.navigate('Products');
+      const response = await fetch(
+        `${process.env.EXPO_PUBLIC_API_URL}/products/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify(productData),
+        }
+      );
+
+      const responseText = await response.text();
+      console.log("📥 Respuesta del servidor:", responseText);
+
+      if (!response.ok) {
+        let errorMessage = "Error al crear el producto";
+        try {
+          const errorData = JSON.parse(responseText);
+          if (errorData.detail) {
+            if (Array.isArray(errorData.detail)) {
+              // Errores de validación de FastAPI/Pydantic
+              errorMessage = errorData.detail
+                .map((err: any) => `${err.loc?.join(".")}: ${err.msg}`)
+                .join("\n");
+            } else if (typeof errorData.detail === "string") {
+              errorMessage = errorData.detail;
+            }
+          }
+        } catch (e) {
+          errorMessage = `Error ${response.status}: ${
+            responseText || response.statusText
+          }`;
+        }
+        throw new Error(errorMessage);
+      }
+
+      const createdProduct = JSON.parse(responseText);
+      console.log("✅ Producto creado exitosamente:", createdProduct);
+
+      Alert.alert("¡Éxito!", `Producto "${name}" publicado exitosamente`, [
+        { text: "OK", onPress: () => navigation.navigate("Products") },
+      ]);
     } catch (e: any) {
-      Alert.alert('Error', e.message || 'No se pudo crear el producto');
+      console.error("❌ Error detallado:", e);
+      Alert.alert("Error", e.message || "No se pudo crear el producto");
     }
   };
 
@@ -170,21 +226,33 @@ const CreateProductScreen: React.FC = () => {
     >
       <View style={styles.modalOverlay}>
         <View style={styles.modalContent}>
-          <Text variant="titleMedium" style={{ marginBottom: 12 }}>{`Selecciona ${title}`}</Text>
+          <Text
+            variant="titleMedium"
+            style={{ marginBottom: 12 }}
+          >{`Selecciona ${title}`}</Text>
           <FlatList
             data={data}
-            keyExtractor={item => item.id.toString()}
+            keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
               <TouchableOpacity
                 style={styles.modalItem}
-                onPress={() => toggleSelection(item.id, selectedIds, setSelectedIds)}
+                onPress={() =>
+                  toggleSelection(item.id, selectedIds, setSelectedIds)
+                }
               >
-                <Checkbox status={selectedIds.includes(item.id) ? 'checked' : 'unchecked'} />
+                <Checkbox
+                  status={
+                    selectedIds.includes(item.id) ? "checked" : "unchecked"
+                  }
+                />
                 <Text>{item.name}</Text>
               </TouchableOpacity>
             )}
           />
-          <Button onPress={() => setVisible({ field: null })} style={{ marginTop: 12 }}>
+          <Button
+            onPress={() => setVisible({ field: null })}
+            style={{ marginTop: 12 }}
+          >
             Cerrar
           </Button>
         </View>
@@ -194,48 +262,110 @@ const CreateProductScreen: React.FC = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text variant="titleLarge" style={styles.title}>Crear nuevo producto</Text>
+      <Text variant="titleLarge" style={styles.title}>
+        Crear nuevo producto
+      </Text>
 
-      <TextInput label="Nombre" value={name} onChangeText={setName} style={styles.input} />
-      <TextInput label="Precio" value={price} onChangeText={setPrice} keyboardType="numeric" style={styles.input} />
-      <TextInput label="Cantidad" value={quantity} onChangeText={setQuantity} keyboardType="numeric" style={styles.input} />
-      <TextInput label="Descripción" value={description} onChangeText={setDescription} multiline style={styles.input} />
+      <TextInput
+        label="Nombre"
+        value={name}
+        onChangeText={setName}
+        style={styles.input}
+      />
+      <TextInput
+        label="Precio"
+        value={price}
+        onChangeText={setPrice}
+        keyboardType="numeric"
+        style={styles.input}
+      />
+      <TextInput
+        label="Cantidad"
+        value={quantity}
+        onChangeText={setQuantity}
+        keyboardType="numeric"
+        style={styles.input}
+      />
+      <TextInput
+        label="Descripción"
+        value={description}
+        onChangeText={setDescription}
+        multiline
+        style={styles.input}
+      />
 
       {/* Dropdowns simples para brand y category */}
-      <Button mode="outlined" onPress={() => setModalVisible({ field: 'brand' })} style={styles.dropdownButton}>
-        {brands.find(b => b.id === brandId)?.name || 'Selecciona marca'}
+      <Button
+        mode="outlined"
+        onPress={() => setModalVisible({ field: "brand" })}
+        style={styles.dropdownButton}
+      >
+        {brands.find((b) => b.id === brandId)?.name || "Selecciona marca"}
       </Button>
-      <Button mode="outlined" onPress={() => setModalVisible({ field: 'category' })} style={styles.dropdownButton}>
-        {categories.find(c => c.id === categoryId)?.name || 'Selecciona categoría'}
+      <Button
+        mode="outlined"
+        onPress={() => setModalVisible({ field: "category" })}
+        style={styles.dropdownButton}
+      >
+        {categories.find((c) => c.id === categoryId)?.name ||
+          "Selecciona categoría"}
       </Button>
 
-      {/* Botones para abrir modal multiselección */}
-      <Button mode="outlined" onPress={() => setModalVisible({ field: 'colors' })} style={styles.dropdownButton}>
+      {/* Botones para abrir modal multiselección - Ahora opcionales */}
+      <Button
+        mode="outlined"
+        onPress={() => setModalVisible({ field: "colors" })}
+        style={styles.dropdownButton}
+      >
         {colorIds.length > 0
-          ? colors.filter(c => colorIds.includes(c.id)).map(c => c.name).join(', ')
-          : 'Selecciona colores'}
+          ? colors
+              .filter((c) => colorIds.includes(c.id))
+              .map((c) => c.name)
+              .join(", ")
+          : "Selecciona colores (opcional)"}
       </Button>
 
-      <Button mode="outlined" onPress={() => setModalVisible({ field: 'genders' })} style={styles.dropdownButton}>
+      <Button
+        mode="outlined"
+        onPress={() => setModalVisible({ field: "genders" })}
+        style={styles.dropdownButton}
+      >
         {genderIds.length > 0
-          ? genders.filter(g => genderIds.includes(g.id)).map(g => g.name).join(', ')
-          : 'Selecciona géneros'}
+          ? genders
+              .filter((g) => genderIds.includes(g.id))
+              .map((g) => g.name)
+              .join(", ")
+          : "Selecciona géneros (opcional)"}
       </Button>
 
-      <Button mode="outlined" onPress={() => setModalVisible({ field: 'materials' })} style={styles.dropdownButton}>
+      <Button
+        mode="outlined"
+        onPress={() => setModalVisible({ field: "materials" })}
+        style={styles.dropdownButton}
+      >
         {materialIds.length > 0
-          ? materials.filter(m => materialIds.includes(m.id)).map(m => m.name).join(', ')
-          : 'Selecciona materiales'}
+          ? materials
+              .filter((m) => materialIds.includes(m.id))
+              .map((m) => m.name)
+              .join(", ")
+          : "Selecciona materiales (opcional)"}
       </Button>
 
-      <Button mode="outlined" onPress={() => setModalVisible({ field: 'sizes' })} style={styles.dropdownButton}>
+      <Button
+        mode="outlined"
+        onPress={() => setModalVisible({ field: "sizes" })}
+        style={styles.dropdownButton}
+      >
         {sizeIds.length > 0
-          ? sizes.filter(s => sizeIds.includes(s.id)).map(s => s.name).join(', ')
-          : 'Selecciona tallas'}
+          ? sizes
+              .filter((s) => sizeIds.includes(s.id))
+              .map((s) => s.name)
+              .join(", ")
+          : "Selecciona tallas (opcional)"}
       </Button>
 
       {/* Renderizamos el modal según qué campo abrir */}
-      {modalVisible.field === 'brand' &&
+      {modalVisible.field === "brand" && (
         <Modal
           visible={true}
           transparent={true}
@@ -244,10 +374,12 @@ const CreateProductScreen: React.FC = () => {
         >
           <View style={styles.modalOverlay}>
             <View style={styles.modalContent}>
-              <Text variant="titleMedium" style={{ marginBottom: 12 }}>Selecciona marca</Text>
+              <Text variant="titleMedium" style={{ marginBottom: 12 }}>
+                Selecciona marca
+              </Text>
               <FlatList
                 data={brands}
-                keyExtractor={item => item.id.toString()}
+                keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => (
                   <TouchableOpacity
                     style={styles.modalItem}
@@ -260,15 +392,18 @@ const CreateProductScreen: React.FC = () => {
                   </TouchableOpacity>
                 )}
               />
-              <Button onPress={() => setModalVisible({ field: null })} style={{ marginTop: 12 }}>
+              <Button
+                onPress={() => setModalVisible({ field: null })}
+                style={{ marginTop: 12 }}
+              >
                 Cerrar
               </Button>
             </View>
           </View>
         </Modal>
-      }
+      )}
 
-      {modalVisible.field === 'category' &&
+      {modalVisible.field === "category" && (
         <Modal
           visible={true}
           transparent={true}
@@ -277,10 +412,12 @@ const CreateProductScreen: React.FC = () => {
         >
           <View style={styles.modalOverlay}>
             <View style={styles.modalContent}>
-              <Text variant="titleMedium" style={{ marginBottom: 12 }}>Selecciona categoría</Text>
+              <Text variant="titleMedium" style={{ marginBottom: 12 }}>
+                Selecciona categoría
+              </Text>
               <FlatList
                 data={categories}
-                keyExtractor={item => item.id.toString()}
+                keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => (
                   <TouchableOpacity
                     style={styles.modalItem}
@@ -293,29 +430,56 @@ const CreateProductScreen: React.FC = () => {
                   </TouchableOpacity>
                 )}
               />
-              <Button onPress={() => setModalVisible({ field: null })} style={{ marginTop: 12 }}>
+              <Button
+                onPress={() => setModalVisible({ field: null })}
+                style={{ marginTop: 12 }}
+              >
                 Cerrar
               </Button>
             </View>
           </View>
         </Modal>
-      }
-
-      {modalVisible.field === 'colors' && renderMultiSelectModal(
-        true, setModalVisible, 'colores', colors, colorIds, setColorIds
       )}
 
-      {modalVisible.field === 'genders' && renderMultiSelectModal(
-        true, setModalVisible, 'géneros', genders, genderIds, setGenderIds
-      )}
+      {modalVisible.field === "colors" &&
+        renderMultiSelectModal(
+          true,
+          setModalVisible,
+          "colores",
+          colors,
+          colorIds,
+          setColorIds
+        )}
 
-      {modalVisible.field === 'materials' && renderMultiSelectModal(
-        true, setModalVisible, 'materiales', materials, materialIds, setMaterialIds
-      )}
+      {modalVisible.field === "genders" &&
+        renderMultiSelectModal(
+          true,
+          setModalVisible,
+          "géneros",
+          genders,
+          genderIds,
+          setGenderIds
+        )}
 
-      {modalVisible.field === 'sizes' && renderMultiSelectModal(
-        true, setModalVisible, 'tallas', sizes, sizeIds, setSizeIds
-      )}
+      {modalVisible.field === "materials" &&
+        renderMultiSelectModal(
+          true,
+          setModalVisible,
+          "materiales",
+          materials,
+          materialIds,
+          setMaterialIds
+        )}
+
+      {modalVisible.field === "sizes" &&
+        renderMultiSelectModal(
+          true,
+          setModalVisible,
+          "tallas",
+          sizes,
+          sizeIds,
+          setSizeIds
+        )}
 
       <Button mode="contained" onPress={handleSubmit} style={{ marginTop: 24 }}>
         Crear producto
@@ -327,7 +491,7 @@ const CreateProductScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     padding: 16,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   title: {
     marginBottom: 24,
@@ -340,19 +504,19 @@ const styles = StyleSheet.create({
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.4)',
-    justifyContent: 'center',
+    backgroundColor: "rgba(0,0,0,0.4)",
+    justifyContent: "center",
     paddingHorizontal: 20,
   },
   modalContent: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 6,
-    maxHeight: '80%',
+    maxHeight: "80%",
     padding: 16,
   },
   modalItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingVertical: 8,
   },
 });
