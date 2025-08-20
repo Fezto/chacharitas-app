@@ -22,7 +22,7 @@ La app está construida con **React Native** y **Expo**, ofreciendo una experien
 - 🛍️ **Catálogo de productos** optimizado para móvil con navegación intuitiva
 - ➕ **Publicación de productos** con formularios móvil-friendly
 - 🎨 **Material Design 3** implementado con React Native Paper
-- 🔄 **Sincronización en tiempo real** con la API de FastAPI
+- 🔄 **Integración con API** mediante cliente HTTP optimizado
 - 📸 **Gestión de imágenes** optimizada para dispositivos móvil
 
 ## 🛠️ Stack Tecnológico
@@ -42,7 +42,7 @@ La app está construida con **React Native** y **Expo**, ofreciendo una experien
 ### Estado y Datos
 
 - **[AsyncStorage](https://react-native-async-storage.github.io/async-storage/)** - Almacenamiento local persistente
-- **[Axios 1.10.0](https://axios-http.com)** - Cliente HTTP para integración con API
+- **[Axios 1.10.0](https://axios-http.com)** - Cliente HTTP para comunicación con backend
 
 ### Desarrollo
 
@@ -84,8 +84,8 @@ chacharitas-app/
 - **Component-Based Architecture** - Componentes reutilizables y modulares
 - **Hooks Pattern** - Gestión de estado con React Hooks
 - **Navigation Pattern** - Navegación de stack nativa
-- **Repository Pattern** - Abstracción de llamadas a la API
 - **Material Design 3** - Implementación completa del sistema de diseño
+- **Separation of Concerns** - Separación clara entre UI y lógica de negocio
 
 ## ✨ Funcionalidades Implementadas
 
@@ -98,7 +98,7 @@ chacharitas-app/
 - ✅ **Navegación fluida** entre pantallas
 - ✅ **Gestión de imágenes** con mapeo local
 - ✅ **Validación de formularios** en tiempo real
-- ✅ **Integración completa** con API FastAPI
+- ✅ **Integración con backend** mediante API REST
 
 ### 🎨 Diseño y UX
 
@@ -147,8 +147,8 @@ yarn install
 ### 3. Configurar Variables de Entorno
 
 ```bash
-# Crear archivo .env
-EXPO_PUBLIC_API_URL=https://chapiritas.org/main/
+# Crear archivo .env con la URL de tu backend
+EXPO_PUBLIC_API_URL=https://tu-backend-url.com/
 ```
 
 ### 4. Ejecutar la Aplicación
@@ -202,28 +202,30 @@ npx eas build --platform android
 npx eas build --platform ios
 ```
 
-## 🔌 Integración con Backend
+## 🔌 Comunicación con Backend
 
-### API Endpoints Utilizados
+La aplicación se comunica con un backend mediante API REST. Los endpoints principales incluyen:
+
+### Estructura de Comunicación
 
 ```typescript
-// Productos
-GET    /products/           // Listar productos
-GET    /products/{id}       // Obtener producto específico
-POST   /products/           // Crear nuevo producto
-PATCH  /products/{id}       // Actualizar producto
-DELETE /products/{id}       // Eliminar producto
+// Configuración del cliente HTTP
+const apiClient = axios.create({
+  baseURL: process.env.EXPO_PUBLIC_API_URL,
+  headers: {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+  },
+});
 
-// Catálogos
-GET    /brands/            // Marcas disponibles
-GET    /categories/        // Categorías de productos
-GET    /colors/            // Colores disponibles
-GET    /genders/           // Géneros disponibles
-GET    /materials/         // Materiales disponibles
-GET    /sizes/             // Tallas disponibles
+// Ejemplo de uso
+const fetchProducts = async () => {
+  const response = await apiClient.get("/products/");
+  return response.data;
+};
 ```
 
-### Estructura de Datos
+### Tipos de Datos TypeScript
 
 ```typescript
 interface Product {
@@ -233,13 +235,13 @@ interface Product {
   quantity?: number;
   user_id: number;
   description?: string;
-  brand: BrandRead;
-  category: CategoryRead;
-  images: ImageRead[];
-  colors: ColorRead[];
-  genders: GenderRead[];
-  materials: MaterialRead[];
-  sizes: SizeRead[];
+  brand: Brand;
+  category: Category;
+  images: Image[];
+  colors: Color[];
+  genders: Gender[];
+  materials: Material[];
+  sizes: Size[];
 }
 ```
 
@@ -301,7 +303,7 @@ const colors = {
 - **Lazy loading** de pantallas no críticas
 - **Memoización** de componentes pesados
 - **Compresión de imágenes** automática
-- **Caché inteligente** de datos de API
+- **Caché inteligente** de datos del servidor
 
 ## 🤝 Contribución al Ecosistema Sustentable
 
@@ -318,15 +320,13 @@ const colors = {
 
 - Arquitectura de aplicación móvil con React Native
 - Implementación de Material Design 3
-- Integración con APIs FastAPI
+- Desarrollo de interfaces móvil optimizadas
 - Optimización de performance móvil
 - Testing en dispositivos reales
 
 ## 📞 Información de Contacto
 
-- **Repositorio App**: [GitHub - Chacharitas Mobile](https://github.com/Fezto/chacharitas-app)
-- **Repositorio Backend**: [GitHub - Chacharitas Web](https://github.com/Fezto/chacharitas)
-- **API Documentation**: [FastAPI Docs](https://chapiritas.org/main/docs)
+- **Repositorio**: [GitHub - Chacharitas Mobile](https://github.com/Fezto/chacharitas-app)
 - **Email**: chacharitas@gmail.com
 
 ## 📄 Licencia
